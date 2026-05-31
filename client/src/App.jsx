@@ -31,7 +31,23 @@ function App() {
   }
 
   return (
-    <ClerkProvider publishableKey={clerkPubKey}>
+    <ClerkProvider 
+      publishableKey={clerkPubKey}
+      appearance={{
+        variables: {
+          colorPrimary: '#0a1c12',
+          fontFamily: "'Poppins', sans-serif",
+          borderRadius: '0px'
+        },
+        elements: {
+          card: 'border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] rounded-none',
+          formButtonPrimary: 'border-2 border-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:shadow-none hover:translate-y-[2px] hover:translate-x-[2px] transition-all',
+          socialButtonsBlockButton: 'border-2 border-black hover:bg-slate-50 transition-all',
+          modalContent: 'mx-auto my-auto',
+          modalBackdrop: 'flex items-center justify-center bg-black/50 backdrop-blur-sm'
+        }
+      }}
+    >
       <Router>
         <Routes>
           <Route path="/" element={<Layout />}>
