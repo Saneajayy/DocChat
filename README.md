@@ -1,5 +1,11 @@
 # DocChat
 
+<p align="center">
+  <img src="client/public/screenshot-1.png" width="32%" />
+  <img src="client/public/screenshot-2.png" width="32%" />
+  <img src="client/public/screenshot-3.png" width="32%" />
+</p>
+
 DocChat is a modern, neo-brutalist web application that transforms static PDFs into interactive knowledge bases. Built with cutting-edge AI, it allows students, researchers, and professionals to seamlessly extract insights, summarize dense texts, and query specific clauses without manually skimming through pages.
 
 ## Features
