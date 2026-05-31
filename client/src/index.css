@@ -1,0 +1,14 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: 'Poppins', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+  --color-referrd-green: #0a1c12;
+  --color-referrd-accent: #ebdcae;
+  --color-referrd-light: #f5f0fb;
+}
+
+@layer base {
+  body {
+    @apply bg-white text-black antialiased font-sans;
+  }
+}
