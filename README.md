@@ -32,6 +32,11 @@ DocChat is a modern, neo-brutalist web application that transforms static PDFs i
 - Pinecone (Vector Database)
 - Multer & pdf-parse (File processing)
 
+**DevOps & Deployment:**
+- Docker & Docker Compose
+- Vercel (Zero-Config Serverless)
+- GitHub Actions (CI Pipeline)
+
 ## Getting Started
 
 ### Prerequisites
@@ -102,6 +107,31 @@ DocChat is a modern, neo-brutalist web application that transforms static PDFs i
    cd client
    npm run dev
    ```
+
+## Deployment
+
+### 🐳 Docker (Recommended)
+The easiest way to run the entire application stack locally or on a VPS is using Docker Compose.
+
+1. Ensure you have created a `.env` file in the root `DocChat/` directory containing your build arguments:
+   ```env
+   VITE_CLERK_PUBLISHABLE_KEY="your_clerk_publishable_key"
+   VITE_API_URL="http://localhost:5000"
+   ```
+2. Build and start the containers:
+   ```bash
+   docker-compose up --build
+   ```
+3. The frontend will be available at `http://localhost` (Port 80) and the backend at `http://localhost:5000`.
+
+### ▲ Vercel
+The application is pre-configured for Vercel deployment.
+
+- **Frontend (`client/`)**: Import the repository into Vercel, set the Framework Preset to **Vite**, and the Root Directory to `client`.
+- **Backend (`server/`)**: Import the repository again, set the Framework Preset to **Other**, and the Root Directory to `server`. Vercel's zero-config setup will automatically detect the `server/api/index.js` file and deploy your Express app as a Serverless Function! *(Note: The repository includes a `server/.npmrc` file to bypass strict peer dependency issues during Vercel builds).*
+
+## CI/CD Pipeline
+This project includes a **GitHub Actions** workflow (`.github/workflows/ci.yml`) that automatically triggers on every push and pull request to the `main` branch. It executes parallel jobs to validate and build both the frontend and backend environments, ensuring code integrity before any deployments.
 
 ## License
 MIT License
