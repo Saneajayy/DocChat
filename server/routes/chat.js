@@ -43,6 +43,10 @@ router.post('/', async (req, res) => {
       return res.status(400).json({ error: 'Missing documentId or question' });
     }
 
+    if (typeof question !== 'string' || question.trim().length === 0 || question.length > 1000) {
+      return res.status(400).json({ error: 'Question must be a valid string under 1000 characters' });
+    }
+
     const document = await prisma.document.findUnique({
       where: { id: documentId }
     });

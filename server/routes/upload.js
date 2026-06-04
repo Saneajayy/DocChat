@@ -11,9 +11,20 @@ const { getIndex } = require('../services/pinecone');
 const { processPdf, getEmbeddings } = require('../services/langchain');
 
 // Temporary local storage for multer
-const upload = multer({ dest: 'uploads/' });
+const upload = multer({ 
+  dest: 'uploads/',
+  limits: { fileSize: 10 * 1024 * 1024 }, // 10MB limit
+  fileFilter: (req, file, cb) => {
+    if (file.mimetype === 'application/pdf') {
+      cb(null, true);
+    } else {
+      cb(new Error('Only PDF files are allowed'), false);
+    }
+  }
+});
 
 router.post('/', upload.single('file'), async (req, res) => {
+  let cloudinaryRes = null;
   try {
     const userId = req.auth.userId;
     if (!userId) {
@@ -26,7 +37,7 @@ router.post('/', upload.single('file'), async (req, res) => {
     }
 
     // 1. Upload to Cloudinary
-    const cloudinaryRes = await cloudinary.uploader.upload(file.path, {
+    cloudinaryRes = await cloudinary.uploader.upload(file.path, {
       resource_type: 'raw',
       folder: `docchat/${userId}`
     });
@@ -89,18 +100,31 @@ router.post('/', upload.single('file'), async (req, res) => {
     });
 
     // Cleanup local file
-    fs.unlinkSync(file.path);
+    await fs.promises.unlink(file.path);
 
     res.status(200).json({ success: true, document });
 
   } catch (error) {
     console.error('Upload Error:', error);
-    fs.appendFileSync('error.log', new Date().toISOString() + ' - ' + error.stack + '\n');
+    
+    // Clean up Cloudinary if upload succeeded but processing failed
+    if (cloudinaryRes && cloudinaryRes.public_id) {
+      try {
+        await cloudinary.uploader.destroy(cloudinaryRes.public_id, { resource_type: 'raw' });
+      } catch (cloudinaryError) {
+        console.error('Failed to clean up Cloudinary resource:', cloudinaryError);
+      }
+    }
+
     // Attempt to cleanup local file if exists
     if (req.file && fs.existsSync(req.file.path)) {
-      fs.unlinkSync(req.file.path);
+      try {
+        await fs.promises.unlink(req.file.path);
+      } catch (cleanupError) {
+        console.error('Error cleaning up local file:', cleanupError);
+      }
     }
-    res.status(500).json({ error: error.message || 'Failed to process document' });
+    res.status(500).json({ error: process.env.NODE_ENV === 'production' ? 'Failed to process document' : error.message });
   }
 });
 

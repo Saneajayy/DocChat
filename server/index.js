@@ -10,7 +10,10 @@ const chatRoutes = require('./routes/chat');
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-app.use(cors());
+app.use(cors({
+  origin: process.env.CLIENT_URL || 'http://localhost:5173',
+  credentials: true
+}));
 app.use(express.json());
 
 // Protect all /api routes with Clerk
@@ -24,7 +27,9 @@ app.use('/api/chat', chatRoutes);
 // Error handling middleware
 app.use((err, req, res, next) => {
   console.error(err.stack);
-  res.status(500).json({ error: err.message || 'Internal Server Error' });
+  res.status(500).json({ 
+    error: process.env.NODE_ENV === 'production' ? 'Internal Server Error' : (err.message || 'Internal Server Error') 
+  });
 });
 
 if (process.env.NODE_ENV !== 'production') {
