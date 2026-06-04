@@ -10,9 +10,9 @@ const cloudinary = require('../services/cloudinary');
 const { getIndex } = require('../services/pinecone');
 const { processPdf, getEmbeddings } = require('../services/langchain');
 
-// Temporary local storage for multer
+// Temporary local storage for multer (use /tmp for Vercel compatibility)
 const upload = multer({ 
-  dest: 'uploads/',
+  dest: '/tmp',
   limits: { fileSize: 10 * 1024 * 1024 }, // 10MB limit
   fileFilter: (req, file, cb) => {
     if (file.mimetype === 'application/pdf') {
