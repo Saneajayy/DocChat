@@ -3,7 +3,7 @@ const router = express.Router();
 const multer = require('multer');
 const fs = require('fs');
 const path = require('path');
-const { v4: uuidv4 } = require('uuid');
+const crypto = require('crypto');
 
 const prisma = require('../services/prisma');
 const cloudinary = require('../services/cloudinary');
@@ -49,7 +49,7 @@ router.post('/', upload.single('file'), async (req, res) => {
     const pineconeIndex = getIndex();
     
     // Create a unique namespace for this document
-    const documentId = uuidv4();
+    const documentId = crypto.randomUUID();
     const pineconeNamespace = `${userId}-${documentId}`;
     
     const chunkTexts = chunks.map(chunk => chunk.pageContent);
