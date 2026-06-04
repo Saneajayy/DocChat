@@ -11,7 +11,23 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 
 app.use(cors({
-  origin: process.env.CLIENT_URL || 'http://localhost:5173',
+  origin: function (origin, callback) {
+    const clientUrl = process.env.CLIENT_URL;
+    if (!origin) return callback(null, true);
+    
+    if (origin === 'http://localhost:5173' || 
+        (clientUrl && origin === clientUrl) || 
+        origin.endsWith('.vercel.app')) {
+      return callback(null, true);
+    }
+    
+    // If CLIENT_URL isn't set, fallback to true to prevent breaking production
+    if (!clientUrl) {
+      return callback(null, true); 
+    }
+    
+    callback(new Error('Not allowed by CORS'));
+  },
   credentials: true
 }));
 app.use(express.json());
