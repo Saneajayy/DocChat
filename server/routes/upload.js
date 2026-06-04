@@ -124,7 +124,7 @@ router.post('/', upload.single('file'), async (req, res) => {
         console.error('Error cleaning up local file:', cleanupError);
       }
     }
-    res.status(500).json({ error: process.env.NODE_ENV === 'production' ? 'Failed to process document' : error.message });
+    res.status(500).json({ error: `Server Error: ${error.message || 'Unknown'}` });
   }
 });
 
