@@ -3,6 +3,9 @@ const { PDFLoader } = require('@langchain/community/document_loaders/fs/pdf');
 const { GoogleGenerativeAIEmbeddings, ChatGoogleGenerativeAI } = require('@langchain/google-genai');
 const fs = require('fs');
 
+// Vercel bundle fix: Statically require pdf-parse so @vercel/nft includes it in the serverless function
+require('pdf-parse');
+
 const { GoogleGenerativeAI } = require('@google/generative-ai');
 
 const getEmbeddings = async (texts) => {
