@@ -14,19 +14,19 @@ app.use(cors({
   origin: function (origin, callback) {
     const clientUrl = process.env.CLIENT_URL;
     if (!origin) return callback(null, true);
-    
-    if (origin === 'http://localhost:5173' || 
-        (clientUrl && origin === clientUrl) || 
-        origin.endsWith('.vercel.app')) {
+
+    if (origin === 'http://localhost:5173' ||
+      (clientUrl && origin === clientUrl) ||
+      origin.endsWith('.vercel.app')) {
       return callback(null, true);
     }
-    
+
     // If CLIENT_URL isn't set, fallback to true to prevent breaking production
     if (!clientUrl) {
-      return callback(null, true); 
+      return callback(null, true);
     }
-    
-    callback(new Error('Not allowed by CORS'));
+
+    callback(new Error('Not allowed by the CORS'));
   },
   credentials: true
 }));
@@ -35,7 +35,7 @@ app.use(express.json());
 // Protect all /api routes with Clerk
 app.use('/api', ClerkExpressRequireAuth());
 
-// Register routes
+// Register route
 app.use('/api/upload', uploadRoutes);
 app.use('/api/documents', documentsRoutes);
 app.use('/api/chat', chatRoutes);
@@ -43,8 +43,8 @@ app.use('/api/chat', chatRoutes);
 // Error handling middleware
 app.use((err, req, res, next) => {
   console.error(err.stack);
-  res.status(500).json({ 
-    error: process.env.NODE_ENV === 'production' ? 'Internal Server Error' : (err.message || 'Internal Server Error') 
+  res.status(500).json({
+    error: process.env.NODE_ENV === 'production' ? 'Internal Server Error' : (err.message || 'Internal Server Error')
   });
 });
 
@@ -55,3 +55,4 @@ if (process.env.NODE_ENV !== 'production') {
 }
 
 module.exports = app;
+//update
