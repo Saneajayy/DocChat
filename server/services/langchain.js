@@ -6,6 +6,9 @@ const fs = require('fs');
 // Vercel bundle fix: Use pdfjs-dist instead of pdf-parse to avoid canvas/native module issues
 const pdfjsLib = require('pdfjs-dist/legacy/build/pdf.js');
 
+// Vercel bundle fix: Statically require the worker so Vercel's bundler includes it
+require('pdfjs-dist/legacy/build/pdf.worker.js');
+
 const { GoogleGenerativeAI } = require('@google/generative-ai');
 
 const getEmbeddings = async (texts) => {
