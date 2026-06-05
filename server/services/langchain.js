@@ -12,14 +12,13 @@ const getEmbeddings = async (texts) => {
   const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
   const model = genAI.getGenerativeModel({ model: 'gemini-embedding-2' });
 
-  const embeddings = await Promise.all(
-    texts.map(async (text) => {
-      const result = await model.embedContent(text);
-      return result.embedding.values;
-    })
-  );
+  const result = await model.batchEmbedContents({
+    requests: texts.map((text) => ({
+      content: { parts: [{ text }] }
+    }))
+  });
 
-  return embeddings;
+  return result.embeddings.map((e) => e.values);
 };
 
 const getChatModel = () => {
