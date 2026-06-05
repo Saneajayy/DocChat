@@ -3,8 +3,8 @@ const { PDFLoader } = require('@langchain/community/document_loaders/fs/pdf');
 const { GoogleGenerativeAIEmbeddings, ChatGoogleGenerativeAI } = require('@langchain/google-genai');
 const fs = require('fs');
 
-// Vercel bundle fix: Statically require pdf-parse so @vercel/nft includes it in the serverless function
-require('pdf-parse');
+// Vercel bundle fix: Use pdfjs-dist instead of pdf-parse to avoid canvas/native module issues
+const pdfjsLib = require('pdfjs-dist/legacy/build/pdf.js');
 
 const { GoogleGenerativeAI } = require('@google/generative-ai');
 
@@ -30,8 +30,10 @@ const getChatModel = () => {
 };
 
 const processPdf = async (filePath) => {
-  // Load PDF
-  const loader = new PDFLoader(filePath);
+  // Load PDF with pdfjs-dist to avoid pdf-parse/canvas native module crash on Vercel
+  const loader = new PDFLoader(filePath, {
+    pdfjs: () => Promise.resolve(pdfjsLib)
+  });
   const docs = await loader.load();
 
   // Calculate total pages (docs is an array where each item is usually a page)
